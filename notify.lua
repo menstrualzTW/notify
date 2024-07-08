@@ -1,171 +1,257 @@
-local ScreenGui = Instance.new('ScreenGui');
+local isExistance = false
 
-local Library = {
-    Registry = {};
-    RegistryMap = {};
+local Notifyt = Instance.new("ScreenGui")
+local NotificationParent = Instance.new("ScrollingFrame")
+local UIListLayout = Instance.new("UIListLayout")
+local UIPadding = Instance.new("UIPadding")
+local Notification = Instance.new("Frame")
+local Container = Instance.new("ImageButton")
+local Top = Instance.new("ImageLabel")
+local Exit = Instance.new("Frame")
+local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+local Icon = Instance.new("ImageLabel")
+local Button = Instance.new("TextButton")
+local Title = Instance.new("TextLabel")
+local Accent = Instance.new("Frame")
+local Body = Instance.new("Frame")
+local Content = Instance.new("TextLabel")
+local UIPadding_2 = Instance.new("UIPadding")
+local UISizeConstraint = Instance.new("UISizeConstraint")
 
-    HudRegistry = {};
+if game.CoreGui:FindFirstChild("Notifyt") then
+	isExistance = true
+	Notifyt = game.CoreGui.Notifyt
+	NotificationParent = Notifyt.NotificationParent
+	Notification = Notifyt.Notification
+end
 
-    FontColor = Color3.fromRGB(255, 255, 255);
-    MainColor = Color3.fromRGB(28, 28, 28);
-    BackgroundColor = Color3.fromRGB(20, 20, 20);
-    AccentColor = Color3.fromRGB(0, 85, 255);
-    OutlineColor = Color3.fromRGB(50, 50, 50);
+Notifyt.Name = "Notifyt"
+Notifyt.Parent = game.CoreGui
+Notifyt.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+Notifyt.ResetOnSpawn = false
 
-    Font = Enum.Font.Code,
+NotificationParent.Name = "NotificationParent"
+NotificationParent.Parent = Notifyt
+NotificationParent.AnchorPoint = Vector2.new(1, 0)
+NotificationParent.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+NotificationParent.BackgroundTransparency = 1.000
+NotificationParent.BorderSizePixel = 0
+NotificationParent.ClipsDescendants = false
+NotificationParent.Position = UDim2.new(1, 0, 0, -25)
+NotificationParent.Selectable = false
+NotificationParent.Size = UDim2.new(0, 275, 1, 0)
+NotificationParent.CanvasSize = UDim2.new(0, 0, 0, 0)
+NotificationParent.ScrollBarThickness = 0
+NotificationParent.ScrollingEnabled = false
 
-    OpenedFrames = {};
-    DependencyBoxes = {};
+UIListLayout.Parent = NotificationParent
+UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Right
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Bottom
+UIListLayout.Padding = UDim.new(0, 5)
 
-    Signals = {};
-    ScreenGui = ScreenGui;
-};
+UIPadding.Parent = NotificationParent
+UIPadding.PaddingRight = UDim.new(0, 25)
 
-function Library:GetTextBounds(Text, Font, Size, Resolution)
-    local Bounds = TextService:GetTextSize(Text, Size, Font, Resolution or Vector2.new(1920, 1080))
-    return Bounds.X, Bounds.Y
-end;
+Notification.Name = "Notification"
+Notification.Parent = Notifyt
+Notification.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Notification.BackgroundTransparency = 1.000
+Notification.BorderSizePixel = 0
+Notification.Position = UDim2.new(1, 0, 0, 0)
+Notification.Size = UDim2.new(0, 250, 0, 0)
+Notification.Visible = false
 
-function Library:AddToRegistry(Instance, Properties, IsHud)
-    local Idx = #Library.Registry + 1;
-    local Data = {
-        Instance = Instance;
-        Properties = Properties;
-        Idx = Idx;
-    };
+Container.Name = "Container"
+Container.Parent = Notification
+Container.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Container.BackgroundTransparency = 1.000
+Container.BorderSizePixel = 0
+Container.Position = UDim2.new(1.14999998, 0, 0, 0)
+Container.Size = UDim2.new(1, 0, 0, 0)
+Container.Image = "rbxassetid://6296184185"
+Container.ImageColor3 = Color3.fromRGB(0, 0, 0)
+Container.ImageTransparency = 0.500
+Container.ScaleType = Enum.ScaleType.Slice
+Container.SliceCenter = Rect.new(512, 512, 512, 512)
+Container.SliceScale = 0.012
 
-    table.insert(Library.Registry, Data);
-    Library.RegistryMap[Instance] = Data;
+Top.Name = "Top"
+Top.Parent = Container
+Top.BackgroundColor3 = Color3.fromRGB(248, 248, 248)
+Top.BackgroundTransparency = 1.000
+Top.BorderSizePixel = 0
+Top.Size = UDim2.new(1, 0, 0, 32)
+Top.ZIndex = 3
+Top.Image = "rbxassetid://6276641225"
+Top.ImageColor3 = Color3.fromRGB(0, 0, 0)
+Top.ImageTransparency = 0.600
+Top.ScaleType = Enum.ScaleType.Slice
+Top.SliceCenter = Rect.new(256, 256, 256, 256)
+Top.SliceScale = 0.022
 
-    if IsHud then
-        table.insert(Library.HudRegistry, Data);
-    end;
-end;
+Exit.Name = "Exit"
+Exit.Parent = Top
+Exit.AnchorPoint = Vector2.new(1, 0)
+Exit.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Exit.BackgroundTransparency = 1.000
+Exit.BorderColor3 = Color3.fromRGB(27, 42, 53)
+Exit.BorderSizePixel = 0
+Exit.ClipsDescendants = true
+Exit.LayoutOrder = 3
+Exit.Position = UDim2.new(1, 0, 0, 0)
+Exit.Size = UDim2.new(1, 0, 1, 0)
 
-function Library:GetDarkerColor(Color)
-    local H, S, V = Color3.toHSV(Color);
-    return Color3.fromHSV(H, S, V / 1.5);
-end;
+UIAspectRatioConstraint.Parent = Exit
 
-function Library:CreateLabel(Properties, IsHud)
-    local _Instance = Library:Create('TextLabel', {
-        BackgroundTransparency = 1;
-        Font = Library.Font;
-        TextColor3 = Library.FontColor;
-        TextSize = 16;
-        TextStrokeTransparency = 0;
-    });
+Icon.Name = "Icon"
+Icon.Parent = Exit
+Icon.AnchorPoint = Vector2.new(0.5, 0.5)
+Icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Icon.BackgroundTransparency = 1.000
+Icon.BorderSizePixel = 0
+Icon.Position = UDim2.new(0.5, 0, 0.5, 0)
+Icon.Size = UDim2.new(0.5, 0, 0.5, 0)
+Icon.Image = "http://www.roblox.com/asset/?id=6415685859"
+Icon.ScaleType = Enum.ScaleType.Fit
 
-    Library:ApplyTextStroke(_Instance);
+Button.Name = "Button"
+Button.Parent = Exit
+Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Button.BackgroundTransparency = 1.000
+Button.BorderSizePixel = 0
+Button.Size = UDim2.new(1, 0, 1, 0)
+Button.ZIndex = 2
+Button.Font = Enum.Font.SourceSans
+Button.Text = ""
+Button.TextColor3 = Color3.fromRGB(0, 0, 0)
+Button.TextSize = 14.000
 
-    Library:AddToRegistry(_Instance, {
-        TextColor3 = 'FontColor';
-    }, IsHud);
+Title.Name = "Title"
+Title.Parent = Top
+Title.AnchorPoint = Vector2.new(1, 0)
+Title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Title.BackgroundTransparency = 1.000
+Title.BorderSizePixel = 0
+Title.Position = UDim2.new(1, 0, 0, 0)
+Title.Size = UDim2.new(1, -12, 1, 0)
+Title.Font = Enum.Font.GothamSemibold
+Title.Text = "Notification"
+Title.TextColor3 = Color3.fromRGB(240, 240, 240)
+Title.TextSize = 14.000
+Title.TextWrapped = true
+Title.TextXAlignment = Enum.TextXAlignment.Left
 
-    return Library:Create(_Instance, Properties);
-end;
+Accent.Name = "Accent"
+Accent.Parent = Top
+Accent.AnchorPoint = Vector2.new(0, 1)
+Accent.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Accent.BackgroundTransparency = 0.700
+Accent.BorderSizePixel = 0
+Accent.Position = UDim2.new(0, 0, 1, 0)
+Accent.Size = UDim2.new(1, 0, 0, 1)
 
-function Library:Create(Class, Properties)
-    local _Instance = Class;
+Body.Name = "Body"
+Body.Parent = Container
+Body.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Body.BackgroundTransparency = 1.000
+Body.BorderSizePixel = 0
+Body.ClipsDescendants = true
+Body.Position = UDim2.new(0, 0, 0, 32)
+Body.Size = UDim2.new(1, 0, 0, 0)
 
-    if type(Class) == 'string' then
-        _Instance = Instance.new(Class);
-    end;
+Content.Name = "Content"
+Content.Parent = Body
+Content.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Content.BackgroundTransparency = 1.000
+Content.BorderSizePixel = 0
+Content.Size = UDim2.new(1, 0, 1, 0)
+Content.Font = Enum.Font.Gotham
+Content.Text = "Message Here. This is an example message prompt."
+Content.TextColor3 = Color3.fromRGB(230, 230, 230)
+Content.TextSize = 14.000
+Content.TextWrapped = true
+Content.TextXAlignment = Enum.TextXAlignment.Left
+Content.TextYAlignment = Enum.TextYAlignment.Top
 
-    for Property, Value in next, Properties do
-        _Instance[Property] = Value;
-    end;
+UIPadding_2.Parent = Body
+UIPadding_2.PaddingBottom = UDim.new(0, 12)
+UIPadding_2.PaddingLeft = UDim.new(0, 12)
+UIPadding_2.PaddingRight = UDim.new(0, 12)
+UIPadding_2.PaddingTop = UDim.new(0, 12)
 
-    return _Instance;
-end;
+UISizeConstraint.Parent = Container
+UISizeConstraint.MaxSize = Vector2.new(math.huge, 120)
 
-function Library:Notify(Text, Time)
-    local XSize, YSize = Library:GetTextBounds(Text, Library.Font, 14);
+Notification.AutomaticSize = Enum.AutomaticSize.Y
+Container.AutomaticSize = Enum.AutomaticSize.Y
+Body.AutomaticSize = Enum.AutomaticSize.Y
 
-    YSize = YSize + 7
+-- remove clones: 
 
-    local NotifyOuter = Library:Create('Frame', {
-        BorderColor3 = Color3.new(0, 0, 0);
-        Position = UDim2.new(0, 100, 0, 10);
-        Size = UDim2.new(0, 0, 0, YSize);
-        ClipsDescendants = true;
-        ZIndex = 100;
-        Parent = Library.NotificationArea;
-    });
+if isExistance then
+	UIListLayout:Destroy()
+	UIPadding:Destroy()
+	Container:Destroy()
+end
 
-    local NotifyInner = Library:Create('Frame', {
-        BackgroundColor3 = Library.MainColor;
-        BorderColor3 = Library.OutlineColor;
-        BorderMode = Enum.BorderMode.Inset;
-        Size = UDim2.new(1, 0, 1, 0);
-        ZIndex = 101;
-        Parent = NotifyOuter;
-    });
+-- script converted by saypotato
 
-    Library:AddToRegistry(NotifyInner, {
-        BackgroundColor3 = 'MainColor';
-        BorderColor3 = 'OutlineColor';
-    }, true);
+local T = game:GetService('TweenService')
+local t = TweenInfo.new(0.5, Enum.EasingStyle.Quint)
+local tp = NotificationParent
 
-    local InnerFrame = Library:Create('Frame', {
-        BackgroundColor3 = Color3.new(1, 1, 1);
-        BorderSizePixel = 0;
-        Position = UDim2.new(0, 1, 0, 1);
-        Size = UDim2.new(1, -2, 1, -2);
-        ZIndex = 102;
-        Parent = NotifyInner;
-    });
+function prompt(title, text, closeTime, close)
+	local Prompt = Notification:Clone()
+	local Sound = Instance.new('Sound', Notification)
 
-    local Gradient = Library:Create('UIGradient', {
-        Color = ColorSequence.new({
-            ColorSequenceKeypoint.new(0, Library:GetDarkerColor(Library.MainColor)),
-            ColorSequenceKeypoint.new(1, Library.MainColor),
-        });
-        Rotation = -90;
-        Parent = InnerFrame;
-    });
+	Prompt.Visible = true
+	Prompt.Container.Top.Title.Text = title
+	Prompt.Container.Body.Content.Text = text
 
-    Library:AddToRegistry(Gradient, {
-        Color = function()
-            return ColorSequence.new({
-                ColorSequenceKeypoint.new(0, Library:GetDarkerColor(Library.MainColor)),
-                ColorSequenceKeypoint.new(1, Library.MainColor),
-            });
-        end
-    });
+	Prompt.Parent = NotificationParent
+	Sound.SoundId = "rbxassetid://6518811702"
+	Sound:Play()
 
-    local NotifyLabel = Library:CreateLabel({
-        Position = UDim2.new(0, 4, 0, 0);
-        Size = UDim2.new(1, -4, 1, 0);
-        Text = Text;
-        TextXAlignment = Enum.TextXAlignment.Left;
-        TextSize = 14;
-        ZIndex = 103;
-        Parent = InnerFrame;
-    });
+	T:Create(Prompt.Container, t, {Position = UDim2.new(0, 0, 0, 0)}):Play()
 
-    local LeftColor = Library:Create('Frame', {
-        BackgroundColor3 = Library.AccentColor;
-        BorderSizePixel = 0;
-        Position = UDim2.new(0, -1, 0, -1);
-        Size = UDim2.new(0, 3, 1, 2);
-        ZIndex = 104;
-        Parent = NotifyOuter;
-    });
+	-- auto size
+	Prompt.AutomaticSize = Enum.AutomaticSize.Y
+	Prompt.Container.AutomaticSize = Enum.AutomaticSize.Y
+	Prompt.Container.Body.AutomaticSize = Enum.AutomaticSize.Y
+	Prompt.Container.Body.Content.AutomaticSize = Enum.AutomaticSize.Y
 
-    Library:AddToRegistry(LeftColor, {
-        BackgroundColor3 = 'AccentColor';
-    }, true);
+	Prompt.Container.Top.Exit.Button.MouseButton1Click:Connect(function()
+		T:Create(Prompt.Container, t, {Position = UDim2.new(1.15, 0, 0, 0)}):Play()
+		wait(0.48)
+		Prompt:Destroy()
+	end)
+	
+	Prompt.Container.Top.Exit.Visible = close
 
-    pcall(NotifyOuter.TweenSize, NotifyOuter, UDim2.new(0, XSize + 8 + 4, 0, YSize), 'Out', 'Quad', 0.4, true);
+	wait(1)
 
-    task.spawn(function()
-        wait(Time or 5);
+	Sound:Destroy()
+	
+	spawn(function()
+		if typeof(closeTime) == "number" then
+			task.wait(closeTime)
+			local s = pcall(function()
+				T:Create(Prompt.Container, t, {Position = UDim2.new(1.15, 0, 0, 0)}):Play()
+				wait(0.48)
+				Prompt:Destroy()
+			end)
+			if not s then
+				print('Already closed.')
+			end
+		end
+	end)
+end
 
-        pcall(NotifyOuter.TweenSize, NotifyOuter, UDim2.new(0, 0, 0, YSize), 'Out', 'Quad', 0.4, true);
+local lib = {}
 
-        wait(0.4);
+function lib.prompt(title, description, closeTime)
+    prompt(title, description, closeTime, true)
+end
 
-        NotifyOuter:Destroy();
-    end);
-end;
+return lib
